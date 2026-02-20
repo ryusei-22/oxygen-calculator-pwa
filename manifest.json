@@ -1,0 +1,22 @@
+{
+  "name": "酸素ボンベ残量計算機",
+  "short_name": "酸素計算",
+  "description": "人工呼吸器使用患者の酸素ボンベ使用可能時間を計算するPWAアプリです。",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0056b3",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

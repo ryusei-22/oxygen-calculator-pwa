@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>酸素ボンベ残量計算機</title>
+    <meta name="description" content="人工呼吸器使用患者の酸素ボンベ使用可能時間を計算するPWAアプリです。">
+    <meta name="theme-color" content="#0056b3">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>酸素ボンベ計算機</h1>
+            <p class="subtitle">人工呼吸器 / 臨床工学技士用</p>
+        </header>
+
+        <main>
+            <section class="card input-section">
+                <h2>酸素ボンベ情報</h2>
+
+                <div class="input-group">
+                    <label for="cylinderVolume">容器の内容積 (L)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="cylinderVolume" step="0.1" placeholder="例: 3.4" required>
+                        <span class="unit">L</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="pressure">圧力計の数値 (MPa)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="pressure" step="0.1" placeholder="例: 10.0" required>
+                        <span class="unit">MPa</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card input-section">
+                <h2>人工呼吸器設定</h2>
+
+                <div class="input-group">
+                    <label for="minuteVolume">分時換気量</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="minuteVolume" step="0.1" placeholder="例: 6.0" required>
+                        <span class="unit">L/分</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="fio2">酸素濃度 (FiO2)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="fio2" step="1" min="21" max="100" placeholder="21 - 100" required>
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card result-section highlight">
+                <h2>使用可能時間 (安全係数 0.8)</h2>
+                <div class="result-display">
+                    <span id="safeTimeResult" class="time-value">--</span>
+                    <span class="time-unit">分</span>
+                </div>
+
+                <div class="details-divider"></div>
+
+                <div class="result-details">
+                    <div class="detail-row">
+                        <span>酸素残量:</span>
+                        <span id="remainingVolumeDetail">-- L</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>酸素消費量:</span>
+                        <span id="consumptionDetail">-- L/分</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>計算上の使用可能時間:</span>
+                        <span id="calcTimeDetail">-- 分</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>※本アプリの計算結果は目安です。必ず実際の患者状態と機器の表示を確認してください。</p>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>
