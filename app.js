@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cylinderVolumeInput = document.getElementById('cylinderVolume');
     const pressureInput = document.getElementById('pressure');
     const minuteVolumeInput = document.getElementById('minuteVolume');
+    const floatTriggerInput = document.getElementById('floatTrigger');
     const fio2Input = document.getElementById('fio2');
 
     // Outputs
@@ -13,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultSection = document.querySelector('.result-section');
 
     // Add event listeners to all inputs
-    const inputs = [cylinderVolumeInput, pressureInput, minuteVolumeInput, fio2Input];
+    const inputs = [cylinderVolumeInput, pressureInput, minuteVolumeInput, floatTriggerInput, fio2Input];
     inputs.forEach(input => {
         input.addEventListener('input', calculate);
     });
@@ -23,11 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const vCyl = parseFloat(cylinderVolumeInput.value);
         const p = parseFloat(pressureInput.value);
         const mv = parseFloat(minuteVolumeInput.value);
+        const ft = parseFloat(floatTriggerInput.value) || 0; // Default to 0 if empty
         const fio2 = parseFloat(fio2Input.value);
 
         // Validate values
         if (isNaN(vCyl) || isNaN(p) || isNaN(mv) || isNaN(fio2) ||
-            vCyl <= 0 || p < 0 || mv <= 0 || fio2 < 21 || fio2 > 100) {
+            vCyl <= 0 || p < 0 || mv <= 0 || fio2 < 21 || fio2 > 100 || ft < 0) {
             resetDisplay();
             return;
         }
@@ -35,10 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Oxygen Cylinder Remaining Volume (L) = 容器の内容積(L) × 圧力計の数値(MPa) × 10
         const vRem = vCyl * p * 10;
 
-        // 2. Ventilator Oxygen Consumption (L/min) = 分時換気量 × ((酸素濃度(%) - 21) / 79)
+        // 2. Ventilator Oxygen Consumption (L/min) = (分時換気量 + フロートリガー) × ((酸素濃度(%) - 21) / 79)
         let flowO2 = 0;
         if (fio2 > 21) {
-            flowO2 = mv * ((fio2 - 21) / 79);
+            flowO2 = (mv + ft) * ((fio2 - 21) / 79);
         }
 
         let tCalc = Infinity;
