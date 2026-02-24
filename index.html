@@ -25,7 +25,8 @@
                 <h2>酸素ボンベ情報</h2>
 
                 <div class="input-group">
-                    <label for="cylinderVolume">容器の内容積 (L)</label>
+                    <label for="cylinderVolume">容器の内容積 (L)<span
+                            class="hint-text">※ボンベの肩部分に表示の【V】の後の数字を入力。例）V3.4であれば3.4と入力</span></label>
                     <div class="input-wrapper">
                         <input type="number" id="cylinderVolume" step="0.1" placeholder="例: 3.4" required>
                         <span class="unit">L</span>
@@ -47,9 +48,9 @@
                     <label for="deviceMode">モード選択</label>
                     <div class="input-wrapper">
                         <select id="deviceMode" class="form-select">
+                            <option value="o2_therapy">一般酸素療法</option>
                             <option value="ippv">人工呼吸器 (IPPV)</option>
                             <option value="nppv">人工呼吸器 (NPPV)</option>
-                            <option value="o2_therapy">一般酸素療法</option>
                             <option value="nhf">ネーザルハイフロー (NHF)</option>
                         </select>
                     </div>
