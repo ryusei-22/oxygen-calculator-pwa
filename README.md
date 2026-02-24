@@ -25,3 +25,4 @@
 ## 開発情報
 - HTML5 / Vanilla CSS / Vanilla JS
 - Service Worker & Web App Manifest 対応
+trigger push
