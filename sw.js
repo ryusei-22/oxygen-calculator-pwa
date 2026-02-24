@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oxygen-calc-v4';
+const CACHE_NAME = 'oxygen-calc-v5';
 const ASSETS = [
     './',
     './index.html',
