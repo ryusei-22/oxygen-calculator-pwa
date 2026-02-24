@@ -1,10 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Inputs
+    const deviceModeSelect = document.getElementById('deviceMode');
     const cylinderVolumeInput = document.getElementById('cylinderVolume');
     const pressureInput = document.getElementById('pressure');
     const minuteVolumeInput = document.getElementById('minuteVolume');
     const floatTriggerInput = document.getElementById('floatTrigger');
+    const leakMvInput = document.getElementById('leakMv');
+    const o2FlowInput = document.getElementById('o2Flow');
+    const totalFlowInput = document.getElementById('totalFlow');
     const fio2Input = document.getElementById('fio2');
+    const dynamicInputs = document.querySelectorAll('.dynamic-input');
 
     // Outputs
     const safeTimeResult = document.getElementById('safeTimeResult');
@@ -14,33 +19,83 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultSection = document.querySelector('.result-section');
 
     // Add event listeners to all inputs
-    const inputs = [cylinderVolumeInput, pressureInput, minuteVolumeInput, floatTriggerInput, fio2Input];
+    const inputs = [
+        cylinderVolumeInput, pressureInput, minuteVolumeInput,
+        floatTriggerInput, leakMvInput, o2FlowInput, totalFlowInput, fio2Input
+    ];
     inputs.forEach(input => {
         input.addEventListener('input', calculate);
     });
 
+    deviceModeSelect.addEventListener('change', () => {
+        updateInputVisibility();
+        calculate();
+    });
+
+    function updateInputVisibility() {
+        const mode = deviceModeSelect.value;
+        const groupClass = `group-${mode}`;
+
+        dynamicInputs.forEach(el => {
+            if (el.classList.contains(groupClass)) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
+            }
+        });
+    }
+
     function calculate() {
-        // Get values
+        // Get mode and base values
+        const mode = deviceModeSelect.value;
         const vCyl = parseFloat(cylinderVolumeInput.value);
         const p = parseFloat(pressureInput.value);
-        const mv = parseFloat(minuteVolumeInput.value);
-        const ft = parseFloat(floatTriggerInput.value) || 0; // Default to 0 if empty
-        const fio2 = parseFloat(fio2Input.value);
 
-        // Validate values
-        if (isNaN(vCyl) || isNaN(p) || isNaN(mv) || isNaN(fio2) ||
-            vCyl <= 0 || p < 0 || mv <= 0 || fio2 < 21 || fio2 > 100 || ft < 0) {
-            resetDisplay();
-            return;
+        // Validation array
+        let isValid = true;
+        if (isNaN(vCyl) || isNaN(p) || vCyl <= 0 || p < 0) {
+            isValid = false;
         }
 
-        // 1. Oxygen Cylinder Remaining Volume (L) = 容器の内容積(L) × 圧力計の数値(MPa) × 10
+        // 1. Oxygen Cylinder Remaining Volume (L)
         const vRem = vCyl * p * 10;
-
-        // 2. Ventilator Oxygen Consumption (L/min) = (分時換気量 + フロートリガー) × ((酸素濃度(%) - 21) / 79)
         let flowO2 = 0;
-        if (fio2 > 21) {
-            flowO2 = (mv + ft) * ((fio2 - 21) / 79);
+
+        // Mode-specific calculations
+        if (mode === 'ippv' || mode === 'nppv') {
+            const mv = parseFloat(minuteVolumeInput.value);
+            const ft = parseFloat(floatTriggerInput.value) || 0;
+            const fio2 = parseFloat(fio2Input.value);
+            const leak = mode === 'nppv' ? (parseFloat(leakMvInput.value) || 0) : 0;
+
+            if (isNaN(mv) || isNaN(fio2) || mv <= 0 || fio2 < 21 || fio2 > 100 || ft < 0 || leak < 0) isValid = false;
+
+            if (isValid && fio2 > 21) {
+                // Flow_O2 = (MV + FT + Leak) * ((FiO2 - 21) / 79)
+                flowO2 = (mv + ft + leak) * ((fio2 - 21) / 79);
+            }
+        } else if (mode === 'o2_therapy') {
+            const o2f = parseFloat(o2FlowInput.value);
+            if (isNaN(o2f) || o2f <= 0) isValid = false;
+
+            if (isValid) {
+                flowO2 = o2f;
+            }
+        } else if (mode === 'nhf') {
+            const tf = parseFloat(totalFlowInput.value);
+            const fio2 = parseFloat(fio2Input.value);
+
+            if (isNaN(tf) || isNaN(fio2) || tf <= 0 || fio2 < 21 || fio2 > 100) isValid = false;
+
+            if (isValid && fio2 > 21) {
+                // Flow_O2 = TotalFlow * ((FiO2 - 21) / 79)
+                flowO2 = tf * ((fio2 - 21) / 79);
+            }
+        }
+
+        if (!isValid) {
+            resetDisplay();
+            return;
         }
 
         let tCalc = Infinity;
@@ -82,6 +137,9 @@ document.addEventListener('DOMContentLoaded', () => {
         consumptionDetail.textContent = '-- L/分';
         calcTimeDetail.textContent = '-- 分';
     }
+
+    // Initialize UI on load
+    updateInputVisibility();
 
     // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {

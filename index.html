@@ -42,25 +42,64 @@
             </section>
 
             <section class="card input-section">
-                <h2>人工呼吸器設定</h2>
-
+                <h2>機器モード設定</h2>
                 <div class="input-group">
-                    <label for="minuteVolume">吸気分時換気量</label>
+                    <label for="deviceMode">モード選択</label>
+                    <div class="input-wrapper">
+                        <select id="deviceMode" class="form-select">
+                            <option value="ippv">人工呼吸器 (IPPV)</option>
+                            <option value="nppv">人工呼吸器 (NPPV)</option>
+                            <option value="o2_therapy">一般酸素療法</option>
+                            <option value="nhf">ネーザルハイフロー (NHF)</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card input-section">
+                <h2>設定値</h2>
+
+                <div class="input-group dynamic-input group-ippv group-nppv">
+                    <label for="minuteVolume">分時換気量</label>
                     <div class="input-wrapper">
                         <input type="number" id="minuteVolume" step="0.1" placeholder="例: 6.0" required>
                         <span class="unit">L/分</span>
                     </div>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group dynamic-input group-ippv group-nppv">
                     <label for="floatTrigger">フロートリガー</label>
                     <div class="input-wrapper">
-                        <input type="number" id="floatTrigger" step="0.1" placeholder="例: 2.0 (ない場合は0を設定)" required>
+                        <input type="number" id="floatTrigger" step="0.1" placeholder="例: 2.0 (ない場合は0)" required>
                         <span class="unit">L/分</span>
                     </div>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group dynamic-input group-nppv">
+                    <label for="leakMv">リークMV</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="leakMv" step="0.1" placeholder="例: 10.0" required>
+                        <span class="unit">L/分</span>
+                    </div>
+                </div>
+
+                <div class="input-group dynamic-input group-o2_therapy">
+                    <label for="o2Flow">酸素流量</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="o2Flow" step="0.1" placeholder="例: 5.0" required>
+                        <span class="unit">L/分</span>
+                    </div>
+                </div>
+
+                <div class="input-group dynamic-input group-nhf">
+                    <label for="totalFlow">総流量 (Total Flow)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="totalFlow" step="1" placeholder="例: 30" required>
+                        <span class="unit">L/分</span>
+                    </div>
+                </div>
+
+                <div class="input-group dynamic-input group-ippv group-nppv group-nhf">
                     <label for="fio2">酸素濃度 (FiO2)</label>
                     <div class="input-wrapper">
                         <input type="number" id="fio2" step="1" min="21" max="100" placeholder="21 - 100" required>
